@@ -18,7 +18,7 @@ class Cohort
   end
 
   def valid_group_sizes?
-    groups.all? { |group| 3 <= group.size && group.size <= 5  }
+    groups.all? { |group| min <= group.size && group.size <= max  }
   end
 
   private
