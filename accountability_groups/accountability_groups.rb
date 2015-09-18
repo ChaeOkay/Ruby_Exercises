@@ -1,5 +1,3 @@
-require 'byebug'
-
 class Cohort
   attr_reader :roster, :max, :min
   attr_accessor :groups
