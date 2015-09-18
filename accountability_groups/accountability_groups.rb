@@ -1,12 +1,14 @@
 require 'byebug'
 
 class Cohort
-  attr_reader :roster
+  attr_reader :roster, :max, :min
   attr_accessor :groups
 
-  def initialize(roster)
+  def initialize(roster, max: 5, min: 3)
     @roster = roster
     @groups = []
+    @max = max
+    @min = min
   end
 
   def randomize_roster
@@ -14,14 +16,11 @@ class Cohort
   end
 
   def divide
-    divy(randomize_roster, 5).each { |subgroup| groups << subgroup }
-    return groups if valid_group_sizes?
-    subgroup = combine_remainder
-    divy(subgroup, 4).each { |subgroup| groups << subgroup }
-    return groups if valid_group_sizes?
-    subgroup = combine_remainder
-    divy(subgroup, 3).each { |subgroup| groups << subgroup }
-    return groups if valid_group_sizes?
+    (min..max).reverse_each do |group_size|
+      invalid_group = groups.empty? ? roster : combine_invalid_group
+      divy(invalid_group, group_size).each { |subgroup| groups << subgroup }
+      return groups if valid_group_sizes?
+    end
   end
 
   def valid_group_sizes?
@@ -30,13 +29,13 @@ class Cohort
 
   private
 
-  def combine_remainder
-    subgroup = groups.pop
-    subgroup << groups.pop
-    subgroup.flatten
+  def combine_invalid_group
+    invalid_group = groups.pop
+    invalid_group << groups.pop
+    invalid_group.flatten
   end
 
-  def divy(group, persons_per_group)
-    group.enum_for(:each_slice, persons_per_group).to_a
+  def divy(invalid_group, persons_per_group)
+    invalid_group.enum_for(:each_slice, persons_per_group).to_a
   end
 end
