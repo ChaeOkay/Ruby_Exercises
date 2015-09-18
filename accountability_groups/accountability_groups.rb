@@ -11,10 +11,6 @@ class Cohort
     @min = min
   end
 
-  def randomize_roster
-    roster.shuffle
-  end
-
   def divide
     (min..max).reverse_each do |group_size|
       invalid_group = groups.empty? ? roster : combine_invalid_group
@@ -28,6 +24,10 @@ class Cohort
   end
 
   private
+
+  def randomize_roster
+    roster.shuffle
+  end
 
   def combine_invalid_group
     invalid_group = groups.pop
